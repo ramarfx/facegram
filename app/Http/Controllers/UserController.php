@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $users = User::whereNot('id', Auth::id())->get();
 
         return response()->json(['users' => $users]);
     }
 
-    public function show(string $username){
+    public function show(string $username)
+    {
         $user = User::where('username', $username)->first();
 
         if (!$user) {
@@ -37,7 +39,19 @@ class UserController extends Controller
             $followingStatus = 'not-following';
         }
 
-        $posts = Post::where('user_id', $user->id)->get();
+        if (!$isYourAccount) {
+            if (!$user->is_private || $followingStatus == 'following') {
+                $posts = Post::where('user_id', $user->id)->get();
+            } else {
+                $posts = [];
+            }
+        } else {
+            if ($user->is_private) {
+                $posts = [];
+            } else {
+                $posts = Post::where('user_id', $user->id)->get();
+            }
+        }
 
         return response()->json([
             'id' => $user->id,
@@ -50,14 +64,14 @@ class UserController extends Controller
             'post_count' => Post::where('user_id', $user->id)->count(),
             'followers_count' => Follow::where('following_id', $user->id)->count(),
             'following_count' => Follow::where('follower_id', $user->id)->count(),
-            'posts' => $posts->map(function ($post) {
+            'posts' => $posts ?? $posts->map(function ($post) {
                 $attacments = PostAttachment::where('post_id', $post->id)->get();
                 return [
                     'id' => $post->id,
                     'caption' => $post->caption,
                     'created_at' => $post->created_at,
                     'deleted_at' => $post->deleted_at,
-                    'attachments' => $attacments->map(function($attachment){
+                    'attachments' => $attacments->map(function ($attachment) {
                         return [
                             'id' => $attachment->id,
                             'storage_path' => $attachment->storage_path
