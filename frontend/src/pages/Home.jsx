@@ -4,14 +4,49 @@ import { useEffect, useState } from "react";
 const Home = () => {
     const [posts, setPosts] = useState([]);
     const [users, setUsers] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [isLoading, setIsloading] = useState(false);
+    const [page, setPage] = useState(0)
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('/posts');
             const response2 = await axios.get('/users');
-            setPosts(response.data.posts)
             setUsers(response2.data.users);
-            console.log(response.data);
+        } catch (error) {
+
+        }
+    }
+
+    const fetchPost = async (page = 0, size = 10) => {
+        try {
+            const response = await axios.get(`/posts?page=${page}&size=${size}`);
+            if (page === 0) {
+                setPosts(response.data.posts)
+            } else {
+                setPosts(prevPost => [...prevPost, ...response.data.posts])
+                console.log(posts);
+            }
+
+        } catch (error) {
+
+        }
+    }
+
+    const fetchFollowingRequest = async () => {
+        try {
+            const response3 = await axios.get('/users/' + sessionStorage.getItem('username') + '/followers')
+            setFollowers(response3.data.followers);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const acceptFollow = async (username) => {
+        try {
+            const response = await axios.put(`/users/${username}/accept`);
+            alert(response.data.message)
+
+            fetchFollowingRequest()
         } catch (error) {
 
         }
@@ -19,8 +54,24 @@ const Home = () => {
 
     useEffect(() => {
         fetchData()
-
+        fetchPost()
+        fetchFollowingRequest()
     }, [])
+
+    const handleScroll = () => {
+        if ((window.scrollY + window.innerHeight) >= document.body.offsetHeight && !isLoading) {
+            console.log('mentok');
+            setIsloading(true);
+            fetchPost(page, 7).then(() => {
+                setIsloading(false);
+                setPage(prevPage => prevPage + 1);
+            }).catch(() => {
+                setIsloading(false);
+            });
+        }
+    };
+
+    window.onscrollend = handleScroll
 
     return (
         <main class="mt-5">
@@ -49,20 +100,22 @@ const Home = () => {
                         <div class="request-follow mb-4">
                             <h6 class="mb-3">Follow Requests</h6>
                             <div class="request-follow-list">
-                                <div class="card mb-2">
-                                    <div class="card-body d-flex align-items-center justify-content-between p-2">
-                                        <a href="user-profile-private.html">@laychristian92</a>
-                                        <a href="" class="btn btn-primary btn-sm">
-                                            Confirm
-                                        </a>
+                                {followers && followers.filter(user => user.is_requested).map((user) => (
+                                    <div class="card mb-2">
+                                        <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                            <a href="user-profile-private.html">@{user.username}</a>
+                                            <button class="btn btn-primary btn-sm" onClick={() => acceptFollow(user.username)}>
+                                                Confirm
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                         <div class="explore-people">
                             <h6 class="mb-3">Explore People</h6>
                             <div class="explore-people-list">
-                                {users && users.slice(0 , 5).map((user) => (
+                                {users && users.slice(0, 5).map((user) => (
                                     <div class="card mb-2">
                                         <div class="card-body p-2">
                                             <a href="user-profile-private.html">@{user.username}</a>

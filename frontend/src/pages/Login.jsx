@@ -17,7 +17,7 @@ const Login = () => {
                 username: e.target.username.value,
                 password: e.target.password.value,
             })
-            
+            sessionStorage.setItem('username', e.target.username.value) 
             setToken(response.data.token)
         } catch (error) {
             console.log(error.response);

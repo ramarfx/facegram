@@ -20,8 +20,7 @@ const Register = () => {
                 bio: e.target.bio.value,
                 is_private: e.target.is_private.checked,
             })
-
-            console.log(e.target.is_private.checked);
+            sessionStorage.setItem('username', e.target.username.value)
             setToken(response.data.token)
         } catch (error) {
             console.log(error.response);

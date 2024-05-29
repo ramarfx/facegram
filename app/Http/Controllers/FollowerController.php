@@ -24,6 +24,7 @@ class FollowerController extends Controller
             return [
                 'id' => $user1->id,
                 'full_name' => $user1->full_name,
+                'username' => $user1->username,
                 'bio' => $user1->bio,
                 'is_private' => $user1->is_private,
                 'created_at' => $user1->created_at,
