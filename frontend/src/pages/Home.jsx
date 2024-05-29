@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const [posts, setPosts] = useState([]);
@@ -103,7 +104,7 @@ const Home = () => {
                                 {followers && followers.filter(user => user.is_requested).map((user) => (
                                     <div class="card mb-2">
                                         <div class="card-body d-flex align-items-center justify-content-between p-2">
-                                            <a href="user-profile-private.html">@{user.username}</a>
+                                            <Link to={'/' + user.username}>@{user.username}</Link>
                                             <button class="btn btn-primary btn-sm" onClick={() => acceptFollow(user.username)}>
                                                 Confirm
                                             </button>
@@ -118,7 +119,7 @@ const Home = () => {
                                 {users && users.map((user) => (
                                     <div class="card mb-2">
                                         <div class="card-body p-2">
-                                            <a href="user-profile-private.html">@{user.username}</a>
+                                            <Link to={'/' + user.username}>@{user.username}</Link>
                                         </div>
                                     </div>
                                 ))}

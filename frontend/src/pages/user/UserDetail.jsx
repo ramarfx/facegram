@@ -23,7 +23,7 @@ const UserDetail = () => {
 
     useEffect(() => {
         fetchUser();
-    }, [])
+    }, [username])
 
     useEffect(() => {
         console.log(user);
@@ -85,7 +85,7 @@ const UserDetail = () => {
 
                         <div class="d-flex gap-3">
                             <div>
-                                <div class="profile-label"><b>5</b> posts</div>
+                                <div class="profile-label"><b>{user.post_count}</b> posts</div>
                             </div>
                             <div class="profile-dropdown">
                                 <div class="profile-label"><b>{user.followers_count}</b> followers</div>
@@ -94,7 +94,7 @@ const UserDetail = () => {
                                         <div class="card-body">
                                             {followers && followers.map((follower) => (
                                                 <div class="profile-user">
-                                                    <a href="user-profile-private.html">@{follower.username}</a>
+                                                    <Link to={'/'+follower.username}>@{follower.username}</Link>
                                                 </div>
                                             ))}
                                         </div>
@@ -108,7 +108,7 @@ const UserDetail = () => {
                                         <div class="card-body">
                                             {following && following.map((follower) => (
                                                 <div class="profile-user">
-                                                    <a href="user-profile-private.html">@{follower.username}</a>
+                                                    <Link to={'/'+follower.username}>@{follower.username}</Link>
                                                 </div>
                                             ))}
                                         </div>
