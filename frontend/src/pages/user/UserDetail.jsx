@@ -49,6 +49,16 @@ const UserDetail = () => {
         }
     }
 
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`/posts/${id}`)
+            console.log(response);
+            fetchUser()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <main class="mt-5">
             <div class="container py-5">
@@ -140,6 +150,7 @@ const UserDetail = () => {
                                             ))}
                                         </div>
                                         <p class="mb-0 text-muted">{post.caption}</p>
+                                        {user.is_your_account && <button className="text-danger btn" onClick={() => handleDelete(post.id)}>delete</button>}
                                     </div>
                                 </div>
                             </div>
