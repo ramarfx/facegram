@@ -17,13 +17,19 @@ class FollowerController extends Controller
         }
 
         $followers = Follow::where('following_id', $user->id)->get();
-        $users = [];
+        $users = User::whereIn('id', $followers->pluck('follower_id'))->get();
 
-        foreach ($followers as $follwers) {
-            $users[] = User::find($follwers->follower_id);
-        }
-
-        return response()->json(['followers' => $users]);
+        return response()->json(['followers' => $users->map(function ($user1) use ($user) {
+            $followerStatus = Follow::where('follower_id', $user1->id)->where('following_id', $user->id)->first();
+            return [
+                'id' => $user1->id,
+                'full_name' => $user1->full_name,
+                'bio' => $user1->bio,
+                'is_private' => $user1->is_private,
+                'created_at' => $user1->created_at,
+                'is_requested' => !$followerStatus->is_accepted
+            ];
+        })]);
     }
 
     public function update(string $username){
