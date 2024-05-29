@@ -30,24 +30,24 @@ const UserDetail = () => {
     }, [user])
 
     const handleFollow = async () => {
-      try {
-        const response = await axios.post(`/users/${username}/follow`)
-        console.log(response);
-        fetchUser()
-      } catch (error) {
-        
-      }
+        try {
+            const response = await axios.post(`/users/${username}/follow`)
+            console.log(response);
+            fetchUser()
+        } catch (error) {
+
+        }
     }
 
     const handleUnfollow = async () => {
         try {
-          const response = await axios.delete(`/users/${username}/unfollow`)
-          console.log(response);
-          fetchUser()
+            const response = await axios.delete(`/users/${username}/unfollow`)
+            console.log(response);
+            fetchUser()
         } catch (error) {
-          
+
         }
-      }
+    }
 
     return (
         <main class="mt-5">
@@ -89,51 +89,64 @@ const UserDetail = () => {
                             </div>
                             <div class="profile-dropdown">
                                 <div class="profile-label"><b>{user.followers_count}</b> followers</div>
-                                <div class="profile-list">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            {followers && followers.map((follower) => (
-                                                <div class="profile-user">
-                                                    <Link to={'/'+follower.username}>@{follower.username}</Link>
-                                                </div>
-                                            ))}
+                                {!user.is_private || user.following_status === 'following' && (
+                                    <div class="profile-list">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {followers && followers.map((follower) => (
+                                                    <div class="profile-user">
+                                                        <Link to={'/' + follower.username}>@{follower.username}</Link>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                             <div class="profile-dropdown">
                                 <div class="profile-label"><b>{user.following_count}</b> following</div>
-                                <div class="profile-list">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            {following && following.map((follower) => (
-                                                <div class="profile-user">
-                                                    <Link to={'/'+follower.username}>@{follower.username}</Link>
-                                                </div>
-                                            ))}
+                                {!user.is_private || user.following_status === 'following' && (
+                                    <div class="profile-list">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {following && following.map((follower) => (
+                                                    <div class="profile-user">
+                                                        <Link to={'/' + follower.username}>@{follower.username}</Link>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-center">
-                    {user.posts?.map((post) => (
-                        <div class="col-md-4">
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <div class="card-images mb-2">
-                                        {post.attachments?.map((attachment) => (
-                                            <img src={"http://localhost:8000/storage/" + attachment.storage_path} className="w-100" />
-                                        ))}
+                {user.is_private && user.following_status !== 'following' ? (
+                    <div class="card py-4">
+                        <div class="card-body text-center">
+                            &#128274; This account is private
+                        </div>
+                    </div>
+                ) : (
+                    <div class="row justify-content-center">
+                        {user.posts?.map((post) => (
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="card-images mb-2">
+                                            {post.attachments?.map((attachment) => (
+                                                <img src={"http://localhost:8000/storage/" + attachment.storage_path} className="w-100" />
+                                            ))}
+                                        </div>
+                                        <p class="mb-0 text-muted">{post.caption}</p>
                                     </div>
-                                    <p class="mb-0 text-muted">{post.caption}</p>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
+
             </div>
         </main >
     );

@@ -44,10 +44,19 @@ class FollowingController extends Controller
             return response()->json(['message' => 'You are already followed', 'status' => $status], 422);
         }
 
-        $follow = Follow::create([
-            'follower_id' => Auth::id(),
-            'following_id' => $user->id,
-        ]);
+        if ($user->is_private) {
+            $follow = Follow::create([
+                'follower_id' => Auth::id(),
+                'following_id' => $user->id,
+
+            ]);
+        } else {
+            $follow = Follow::create([
+                'follower_id' => Auth::id(),
+                'following_id' => $user->id,
+                'is_accepted' => 1
+            ]);
+        }
 
         $status = $follow->is_accepted == 1 ? 'following' : 'requested';
 

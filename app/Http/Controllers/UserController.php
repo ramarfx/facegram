@@ -41,7 +41,22 @@ class UserController extends Controller
 
         if (!$isYourAccount) {
             if (!$user->is_private || $followingStatus == 'following') {
-                $posts = Post::where('user_id', $user->id)->get();
+                $posts = Post::where('user_id', $user->id)->get()->map(function ($post) {
+                    $attacments = PostAttachment::where('post_id', $post->id)->get();
+                    return [
+                        'id' => $post->id,
+                        'caption' => $post->caption,
+                        'created_at' => $post->created_at,
+                        'deleted_at' => $post->deleted_at,
+                        'attachments' => $attacments->map(function ($attachment) {
+                            return [
+                                'id' => $attachment->id,
+                                'storage_path' => $attachment->storage_path
+                            ];
+                        })
+                    ];
+                });
+
             } else {
                 $posts = [];
             }
@@ -49,7 +64,21 @@ class UserController extends Controller
             if ($user->is_private) {
                 $posts = [];
             } else {
-                $posts = Post::where('user_id', $user->id)->get();
+                $posts = Post::where('user_id', $user->id)->get()->map(function ($post) {
+                    $attacments = PostAttachment::where('post_id', $post->id)->get();
+                    return [
+                        'id' => $post->id,
+                        'caption' => $post->caption,
+                        'created_at' => $post->created_at,
+                        'deleted_at' => $post->deleted_at,
+                        'attachments' => $attacments->map(function ($attachment) {
+                            return [
+                                'id' => $attachment->id,
+                                'storage_path' => $attachment->storage_path
+                            ];
+                        })
+                    ];
+                });
             }
         }
 
@@ -65,21 +94,7 @@ class UserController extends Controller
             'post_count' => Post::where('user_id', $user->id)->count(),
             'followers_count' => Follow::where('following_id', $user->id)->count(),
             'following_count' => Follow::where('follower_id', $user->id)->count(),
-            'posts' => $posts->map(function ($post) {
-                $attacments = PostAttachment::where('post_id', $post->id)->get();
-                return [
-                    'id' => $post->id,
-                    'caption' => $post->caption,
-                    'created_at' => $post->created_at,
-                    'deleted_at' => $post->deleted_at,
-                    'attachments' => $attacments->map(function ($attachment) {
-                        return [
-                            'id' => $attachment->id,
-                            'storage_path' => $attachment->storage_path
-                        ];
-                    })
-                ];  
-            })
+            'posts' => $posts
         ]);
     }
 }

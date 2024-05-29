@@ -92,27 +92,29 @@ const Home = () => {
                                             <img src={'http://localhost:8000/storage/' + attachment.storage_path} alt="" class="w-100" />
                                         ))}
                                     </div>
-                                    <p class="mb-0 text-muted"><b><a href="user-profile.html">{post.user.username}</a></b> {post.caption}</p>
+                                    <p class="mb-0 text-muted"><b><Link to={'/' + post.user.username}>{post.user.username}</Link></b> {post.caption}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                     <div class="col-md-4">
-                        <div class="request-follow mb-4">
-                            <h6 class="mb-3">Follow Requests</h6>
-                            <div class="request-follow-list">
-                                {followers && followers.filter(user => user.is_requested).map((user) => (
-                                    <div class="card mb-2">
-                                        <div class="card-body d-flex align-items-center justify-content-between p-2">
-                                            <Link to={'/' + user.username}>@{user.username}</Link>
-                                            <button class="btn btn-primary btn-sm" onClick={() => acceptFollow(user.username)}>
-                                                Confirm
-                                            </button>
+                        {followers && followers.filter(follower => follower.is_requested === true).length > 0 && (
+                            <div class="request-follow mb-4">
+                                <h6 class="mb-3">Follow Requests</h6>
+                                <div class="request-follow-list">
+                                    {followers.filter(user => user.is_requested).map((user) => (
+                                        <div class="card mb-2">
+                                            <div class="card-body d-flex align-items-center justify-content-between p-2">
+                                                <Link to={'/' + user.username}>@{user.username}</Link>
+                                                <button class="btn btn-primary btn-sm" onClick={() => acceptFollow(user.username)}>
+                                                    Confirm
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <div class="explore-people">
                             <h6 class="mb-3">Explore People</h6>
                             <div class="explore-people-list">
