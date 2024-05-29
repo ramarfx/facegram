@@ -56,6 +56,7 @@ class UserController extends Controller
         return response()->json([
             'id' => $user->id,
             'full_name' => $user->full_name,
+            'username' => $user->username,
             'bio' => $user->bio,
             'is_private' => $user->is_private,
             'created_at' => $user->created_at,
@@ -64,7 +65,7 @@ class UserController extends Controller
             'post_count' => Post::where('user_id', $user->id)->count(),
             'followers_count' => Follow::where('following_id', $user->id)->count(),
             'following_count' => Follow::where('follower_id', $user->id)->count(),
-            'posts' => $posts ?? $posts->map(function ($post) {
+            'posts' => $posts->map(function ($post) {
                 $attacments = PostAttachment::where('post_id', $post->id)->get();
                 return [
                     'id' => $post->id,
@@ -77,7 +78,7 @@ class UserController extends Controller
                             'storage_path' => $attachment->storage_path
                         ];
                     })
-                ];
+                ];  
             })
         ]);
     }

@@ -18,7 +18,7 @@ const TopBar = () => {
             <div class="container">
                 <Link to={'/'} class="navbar-brand">Facegram</Link>
                 <div class="navbar-nav">
-                    <a class="nav-link">{sessionStorage.getItem('username')}</a>
+                    <Link to={'/' + sessionStorage.getItem('username')} class="nav-link">{sessionStorage.getItem('username')}</Link>
                     <button class="nav-link" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
