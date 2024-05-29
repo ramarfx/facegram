@@ -28,7 +28,7 @@ class PostController extends Controller
         $page = $request->input('page', 0);
         $size = $request->input('size', 10);
 
-        $posts = Post::paginate($size, ['*'], 'page', $page + 1);
+        $posts = Post::latest()->paginate($size, ['*'], 'page', $page + 1);
 
         return response()->json([
             'page' => $page,

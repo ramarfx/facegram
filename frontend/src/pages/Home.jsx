@@ -115,7 +115,7 @@ const Home = () => {
                         <div class="explore-people">
                             <h6 class="mb-3">Explore People</h6>
                             <div class="explore-people-list">
-                                {users && users.slice(0, 5).map((user) => (
+                                {users && users.map((user) => (
                                     <div class="card mb-2">
                                         <div class="card-body p-2">
                                             <a href="user-profile-private.html">@{user.username}</a>

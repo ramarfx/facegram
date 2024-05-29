@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useStateContext } from "../context/stateContext";
+import { Link } from "react-router-dom";
 
 const TopBar = () => {
     const { setToken } = useStateContext()
@@ -15,9 +16,9 @@ const TopBar = () => {
     return (
         <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="homepage.html">Facegram</a>
+                <Link to={'/'} class="navbar-brand">Facegram</Link>
                 <div class="navbar-nav">
-                    <a class="nav-link" href="my-profile.html">{sessionStorage.getItem('username')}</a>
+                    <a class="nav-link">{sessionStorage.getItem('username')}</a>
                     <button class="nav-link" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
