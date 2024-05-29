@@ -72,7 +72,7 @@ class PostController extends Controller
         ]);
 
         foreach ($request->attachments as $attachment){
-            $image = $attachment->store('posts');
+            $image = $attachment->store('posts', 'public');
 
             PostAttachment::create([
                 'storage_path' => $image,
